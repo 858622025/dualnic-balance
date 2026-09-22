@@ -1,0 +1,46 @@
+[package]
+name = "dualnic-service"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "双网卡分流常驻服务：路由对账/自愈、网络事件监听、IPC 服务端（LocalSystem）"
+
+# Windows 服务：需要 windows-service 提供 LocalSystem 服务主体
+# 路由 API / 网络事件：windows crate（IP Helper: GetIpForwardTable2 等）
+# core 负责纯逻辑，这里负责系统侧接线
+[dependencies]
+dualnic-core = { path = "../core" }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-appender = { workspace = true }
+ctrlc = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+# SQLite：配置 + 事件日志持久化（bundled 编译内置 SQLite，无外部运行时依赖）
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# 构建期把 assets/icon.ico 嵌入 exe（资源管理器/任务栏的文件图标）
+[build-dependencies]
+winresource = "0.1"
+
+[target.'cfg(windows)'.dependencies]
+windows-service = "0.7"
+# 一键诊断：把 route/netsh 的 GBK 输出转 UTF-8
+encoding_rs = "0.8"
+
+[target.'cfg(windows)'.dependencies.windows]
+workspace = true
+# IP Helper 读路由/接口：GetIpForwardTable(仅IPv4,无union坑) + GetIfTable2(接口名映射)。
+# Win32_Foundation 提供 BOOL。只读枚举，普通权限可调。
+# GetIpForwardTable/MIB_IPFORWARDROW 在 Win32_Networking_WinSock 下；GetIfTable2/MIB_IF_TABLE2
+# 在 Win32_NetworkManagement_Ndis 下；FreeMibTable 等工具在 IpHelper。Foundation 提供 BOOL/WIN32_ERROR。
+features = [
+    "Win32_Foundation",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Networking_WinSock",
+    "Win32_System_Registry",
+]

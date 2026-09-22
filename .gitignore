@@ -1,0 +1,24 @@
+# Rust build output
+/target
+**/target/
+
+# Cargo 缓存与本地产物
+Cargo.lock.orig
+*.rs.bk
+
+# Windows / IDE
+Thumbs.db
+Desktop.ini
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OneDrive 同步产生的冲突副本
+*_conflict_*
+*.tmp
+
+# 日志与运行时产物
+*.log
+*.etl
+dist/*.zip

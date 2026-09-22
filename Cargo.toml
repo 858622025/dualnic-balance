@@ -1,0 +1,37 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/service",
+    "crates/gui",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.75"
+
+# 工作区共享依赖版本（各 crate 用 workspace = true 引用，便于统一升级）
+[workspace.dependencies]
+windows = { version = "0.58", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+tracing-appender = "0.2"
+ctrlc = "3"
+
+# —— GUI（eframe/egui 状态窗）。
+# 渲染后端用 glow（OpenGL）而非默认 wgpu：避开 wgpu-hal 30 在 windows crate 多版本下的
+# 编译冲突，且编译量更小；状态窗对渲染性能无要求，glow 足够。
+eframe = { version = "0.36", default-features = false, features = ["glow", "default_fonts"] }
+
+[profile.release]
+# 面向公司批量分发：服务/GUI 都是小工具，体积不是首要矛盾
+# 但保持 LTO 减小体积并利于排查
+lto = "thin"
+codegen-units = 1
+panic = "abort"

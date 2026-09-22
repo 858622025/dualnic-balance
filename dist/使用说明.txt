@@ -1,0 +1,36 @@
+﻿DualNIC Balance —— 双网卡内外网分流（绿色便携版）
+
+【内容】
+  dualnic-gui.exe     桌面界面（普通权限，免 UAC）
+  dualnic-service.exe 后台服务（路由对账/自愈，安装时由系统托管）
+
+【快速开始】
+  方式一（推荐，IT 批量部署友好）：
+    双击 setup.bat → 选 1 一键安装：
+    · 安装后台服务（LocalSystem、开机自启、崩溃自动重启）
+    · 注册 GUI 登录自启动（登录后 30 秒自启，取消 72 小时强制结束）
+    卸载：setup.bat → 选 2（或命令行 setup.bat uninstall）。
+    注意：setup.bat 必须保持 ANSI(GBK)+CRLF 编码保存，不要用编辑器另存为 UTF-8。
+
+  方式二（图形界面）：
+    1. 双击 dualnic-gui.exe（单实例；首启会弹 UAC 自动启动临时后台引擎，可取消）；
+    2. 「设置」页 → 安装服务（弹 UAC）→ 注册自启动；
+    3. 首次使用会弹「网卡标记」引导：勾选哪些是物理网卡；
+    4. 「配置向导」页：配置内网/外网卡与内网网段 → 启用方案。
+
+  注：不装服务也能试用（临时引擎仅本次开机有效）；要长期稳定分流请安装服务。
+
+【卸载】
+  「设置」页 → 卸载服务 → 取消自启动，然后删除本目录即可。
+  （服务卸载后已写入的路由保持现状，重启电脑即完全还原。）
+
+【数据位置】
+  配置与事件日志：%ProgramData%\DualNIC Balance\dualnic.db
+  服务日志：      %ProgramData%\DualNIC Balance\logs\
+
+【多语言 / Languages / 言語】
+  界面语言在「设置」页切换：跟随系统 / 简体中文(SC) / 繁體中文(TC) / English(en) / 日本語(ja)。
+  语言文件在本目录 lang\ 下；新增语言：在 lang\languages.ini 加一行（代码固定 2 字符），
+  并放一个同名 <代码>.ini 即可，无需改程序。
+  Switch the UI language on the "Settings" page. To add a language: add one line to
+  lang\languages.ini (2-letter code) and drop a matching <code>.ini file — no code changes needed.

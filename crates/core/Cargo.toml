@@ -1,0 +1,14 @@
+[package]
+name = "dualnic-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "双网卡分流 core：纯逻辑层（配置模型、角色识别、LPM、路由意图），无 Windows 依赖，可单测"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+# core 绝不引入 windows 依赖 —— 保持可单测、可移植

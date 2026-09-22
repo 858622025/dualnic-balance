@@ -1,0 +1,29 @@
+[package]
+name = "dualnic-gui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "双网卡分流桌面 GUI（免 UAC）：状态/风险页、规则预览、策略页、诊断、托盘"
+
+# eframe/eframe 状态窗 + 本机 IPC 客户端（JSON 行协议，契约在 dualnic-core::ipc）。
+# 注意：不链接 dualnic-service（它是纯 bin）。GUI 与服务交互走本机回环 IPC，不进程内链接。
+[dependencies]
+dualnic-core = { path = "../core" }
+eframe = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+# 连通性探测：绑定候选网卡源地址后再 TCP 连接目标（判定“哪块能出外网”）。
+socket2 = "0.5"
+# 事件日志时间戳格式化（unix 秒 → 本地 HH:MM:SS）
+chrono = "0.4"
+# 系统托盘：最小化到托盘 + 右键菜单（暂停/恢复分流、退出）
+tray-icon = "0.24"
+# 配置导入/导出的文件对话框
+rfd = "0.15"
+# 加载 assets/icon-*.png → 窗口图标 + 托盘图标（只开 png 解码，控制体积）
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+# 构建期把 assets/icon.ico 嵌入 exe（资源管理器/任务栏的文件图标）
+[build-dependencies]
+winresource = "0.1"
